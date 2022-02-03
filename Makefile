@@ -21,12 +21,13 @@ main_hook.h: $(sd_loader_elf)
 
 $(sd_loader_elf):
 	make -C main_hook
-	
+
 setup:
 	mkdir -p $(root)/bin/
 
 main550:
 	make main FIRMWARE=550
+	cp $(root)/code550.bin ../JsTypeHax/code550.bin
 
 main: main_hook.h
 	$(CC) $(CFLAGS) -DVER=$(FIRMWARE) -c $(project)/launcher.c
@@ -35,11 +36,11 @@ main: main_hook.h
 	$(AS) $(ASFLAGS) -DVER=$(FIRMWARE) -c $(project)/crt0.S
 	cp -r $(root)/*.o $(build)
 	rm $(root)/*.o
-	$(LD) -s -o code$(FIRMWARE).bin $(build)/crt0.o `find $(build) -name "*.o" ! -name "crt0.o"` --oformat binary  $(LDFLAGS) 
-	$(LD) -s -o code$(FIRMWARE).elf $(build)/crt0.o `find $(build) -name "*.o" ! -name "crt0.o"` $(LDFLAGS) 
+	$(LD) -s -o code$(FIRMWARE).bin $(build)/crt0.o `find $(build) -name "*.o" ! -name "crt0.o"` --oformat binary  $(LDFLAGS)
+	$(LD) -s -o code$(FIRMWARE).elf $(build)/crt0.o `find $(build) -name "*.o" ! -name "crt0.o"` $(LDFLAGS)
 
 clean:
 	rm -rf $(build)
 	rm -rf main_hook.h
-	rm -rf code550.h   
+	rm -rf code550.h
 	make clean -C main_hook
